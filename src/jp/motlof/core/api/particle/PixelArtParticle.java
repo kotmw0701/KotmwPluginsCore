@@ -83,7 +83,9 @@ public class PixelArtParticle {
 	 * @param location 開始点座標
 	 */
 	public PixelArtParticle(String string, Location location) {
-		stringParticle(string, location, separate, enumParticle, font);
+		try {
+			stringParticle(string, location, separate, enumParticle, font);
+		} catch (IllegalArgumentException e) {}//握りつぶしたくはないけど、デフォルトフォントじゃエラーは発生しないから
 	}
 	
 	/**
@@ -95,7 +97,9 @@ public class PixelArtParticle {
 	 * @param separate パーティクル同士の間隔(推奨: 0.10～0.20)
 	 */
 	public PixelArtParticle(String string, Location location, double separate) {
-		stringParticle(string, location, separate, enumParticle, font);
+		try {
+			stringParticle(string, location, separate, enumParticle, font);
+		} catch (IllegalArgumentException e) {}//握りつぶしたくはないけど、デフォルトフォントじゃエラーは発生しないから
 	}
 	
 	/**
@@ -108,7 +112,9 @@ public class PixelArtParticle {
 	 * @param enumParticle Particleの種類
 	 */
 	public PixelArtParticle(String string, Location location, double separate, EnumParticle enumParticle) {
-		stringParticle(string, location, separate, enumParticle, font);
+		try {
+			stringParticle(string, location, separate, enumParticle, font);
+		} catch (IllegalArgumentException e) {}//握りつぶしたくはないけど、デフォルトフォントじゃエラーは発生しないから
 	}
 	
 	/**
@@ -120,18 +126,22 @@ public class PixelArtParticle {
 	 * @param separate パーティクル同士の間隔(推奨: 0.10～0.20)
 	 * @param enumParticle Particleの種類
 	 * @param font 出力したいフォント、デフォルトは(SERIF, PLAIN, 12)
+	 * @throws Exception 使用することが出来ないフォントが設定されている
 	 */
-	public PixelArtParticle(String string, Location location, double separate, EnumParticle enumParticle, Font font) {
+	public PixelArtParticle(String string, Location location, double separate, EnumParticle enumParticle, Font font) throws IllegalArgumentException {
 		stringParticle(string, location, separate, enumParticle, font);
 	}
 	
-	private void stringParticle(String string, Location location, double separate, EnumParticle enumParticle, Font font) {
+	private void stringParticle(String string, Location location, double separate, EnumParticle enumParticle, Font font) throws IllegalArgumentException {
 		this.location = location.clone();
 		this.enumParticle = enumParticle;
 		this.separate = (separate <= 0) ? 0.2 : separate;//0以下だったら強制的に0.2にする
 		FontMetrics fontMetrics = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).createGraphics().getFontMetrics(font);//文字列の縦横比を取るため、Fontのメトリクスを取得
+		int count = count(string, "%n");//改行回数
 		w = fontMetrics.stringWidth(maxWidthString(string, "%n"));//最大の長さの文字列を出して、そこから横幅を算出
-		h = count(string, "%n")*fontMetrics.getHeight();//高さx改行回数
+		h = fontMetrics.getHeight()*count;//高さx改行回数
+		if(w == 0 || h == 0)//どちらかが0だと描画さえされないため、使用不可能
+			throw new IllegalArgumentException("このフォントは使用することが出来ません");
 		image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);//算出した縦横数値をもとにベースとなる画像を生成
 		Graphics2D graphics2d = image.createGraphics();//クソ、使いにくいこれ、もっと良いの無いの
 		graphics2d.setFont(font);//フォント設定
@@ -143,6 +153,10 @@ public class PixelArtParticle {
 	}
 	
 	public void show() {
+		show(0, 0, 0);
+	}
+	
+	public void show(double x_rotation, double y_rotation, double z_rotation) {
 		DetailsColor color = new DetailsColor(0, 0, 0);
 		for(int x = 0; x < w; x++) {
 			for(int y = 0; y < h; y++) {

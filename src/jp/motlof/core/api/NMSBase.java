@@ -34,6 +34,15 @@ public class NMSBase {
 		}
 	}
 	
+	protected static Class<?> getClass(String name) {
+		try {
+			return Class.forName(String.format(name, ver));
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	protected enum Ver{
 		v1_9, //byte
 		v1_10, //byte
