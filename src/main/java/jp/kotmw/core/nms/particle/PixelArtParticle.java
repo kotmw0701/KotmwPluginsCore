@@ -1,4 +1,4 @@
-package jp.motlof.core.api.particle;
+package jp.kotmw.core.nms.particle;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,10 +14,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import jp.motlof.core.api.DetailsColor;
-import jp.motlof.core.api.Polar_coodinates;
-import jp.motlof.core.api.particle.ParticleAPI.EnumParticle;
-import jp.motlof.core.api.particle.ParticleAPI.Particle;
+import jp.kotmw.core.nms.DetailsColor;
+import jp.kotmw.core.nms.Polar_coordinates;
+import jp.kotmw.core.nms.particle.ParticleAPI.EnumParticle;
+import jp.kotmw.core.nms.particle.ParticleAPI.Particle;
 
 public class PixelArtParticle {
 
@@ -164,7 +164,7 @@ public class PixelArtParticle {
 				if(new Color(pixel, true).getAlpha() == 0)//Alpha値が0(=透明)だった場合は出力しない
 					continue;
 				if(applyColor) color = new DetailsColor((pixel >> 16) & 0xFF, (pixel >> 8) & 0xFF, pixel & 0xFF);
-				Polar_coodinates pCoodinates = new Polar_coodinates(new Location(location.getWorld(), x*separate, y*separate, 0)).add(0, 0, Math.toRadians(180));
+				Polar_coordinates pCoodinates = new Polar_coordinates(new Location(location.getWorld(), x*separate, y*separate, 0)).add(0, 0, Math.toRadians(180));
 				sendParticle(location.clone().add(pCoodinates.convertLocation()), color);
 			}
 		}

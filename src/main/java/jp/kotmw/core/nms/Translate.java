@@ -1,4 +1,4 @@
-package jp.motlof.core.api;
+package jp.kotmw.core.nms;
 
 import java.lang.reflect.InvocationTargetException;
 

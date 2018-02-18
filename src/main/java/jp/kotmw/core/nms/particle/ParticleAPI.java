@@ -1,4 +1,4 @@
-package jp.motlof.core.api.particle;
+package jp.kotmw.core.nms.particle;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -14,11 +14,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
-import jp.motlof.core.api.NMSBase;
+import com.google.gson.annotations.SerializedName;
 
-public class ParticleAPI extends NMSBase {
+import jp.kotmw.core.nms.NMSBase;
 
-	public static class Particle {
+public class ParticleAPI extends NMSBase{
+
+	public static class Particle{
 		private EnumParticle particle;
 		private Location location;
 		private float[] diffusion;
@@ -117,52 +119,99 @@ public class ParticleAPI extends NMSBase {
 	 * パーティクルの種類を表す列挙型
 	 */
 	public static enum EnumParticle {
+		@SerializedName("explode")
 		EXPLOSION_NORMAL("explode", 0),
+		@SerializedName("largeexplode")
 		EXPLOSION_LARGE("largeexplode", 1),
+		@SerializedName("hugeexplosion")
 		EXPLOSION_HUGE("hugeexplosion", 2),
+		@SerializedName("fireworksSpark")
 		FIREWORKS_SPARK("fireworksSpark", 3),
+		@SerializedName("bubble")
 		WATER_BUBBLE("bubble", 4),
+		@SerializedName("splash")
 		WATER_SPLASH("splash", 5),
+		@SerializedName("wake")
 		WATER_WAKE("wake", 6),
+		@SerializedName("suspended")
 		SUSPENDED("suspended", 7),
+		@SerializedName("depthsuspend")
 		SUSPENDED_DEPTH("depthsuspend", 8),
+		@SerializedName("crit")
 		CRIT("crit", 9),
+		@SerializedName("magicCrit")
 		CRIT_MAGIC("magicCrit", 10),
+		@SerializedName("smoke")
 		SMOKE_NORMAL("smoke", 11),
+		@SerializedName("largesmoke")
 		SMOKE_LARGE("largesmoke", 12),
+		@SerializedName("spell")
 		SPELL("spell", 13),
+		@SerializedName("instantSpell")
 		SPELL_INSTANT("instantSpell", 14),
+		@SerializedName("mobSpell")
 		SPELL_MOB("mobSpell", 15, DataType.Color),
+		@SerializedName("mobSpellAmbient")
 		SPELL_MOB_AMBIENT("mobSpellAmbient", 16, DataType.Color),
+		@SerializedName("witchMagic")
 		SPELL_WITCH("witchMagic", 17),
+		@SerializedName("dripWater")
 		DRIP_WATER("dripWater", 18),
+		@SerializedName("dripLava")
 		DRIP_LAVA("dripLava", 19),
+		@SerializedName("angryVillager")
 		VILLAGER_ANGRY("angryVillager", 20),
+		@SerializedName("happyVillager")
 		VILLAGER_HAPPY("happyVillager", 21),
+		@SerializedName("townaura")
 		TOWN_AURA("townaura", 22),
+		@SerializedName("note")
 		NOTE("note", 23, DataType.Note),
+		@SerializedName("portal")
 		PORTAL("portal", 24),
+		@SerializedName("enchantmenttable")
 		ENCHANTMENT_TABLE("enchantmenttable", 25),
+		@SerializedName("flame")
 		FLAME("flame", 26),
+		@SerializedName("lava")
 		LAVA("lava", 27),
+		@SerializedName("footstep")
 		FOOTSTEP("footstep", 28),
+		@SerializedName("cloud")
 		CLOUD("cloud", 29),
+		@SerializedName("reddust")
 		REDSTONE("reddust", 30, DataType.Color),
+		@SerializedName("snowballpoof")
 		SNOWBALL("snowballpoof", 31),
+		@SerializedName("snowshovel")
 		SNOW_SHOVEL("snowshovel", 32),
+		@SerializedName("slime")
 		SLIME("slime", 33),
+		@SerializedName("heart")
 		HEART("heart", 34),
+		@SerializedName("barrier")
 		BARRIER("barrier", 35),
+		@SerializedName("iconcrack")
 		ITEM_CRACK("iconcrack", 36, DataType.ItemStack),
+		@SerializedName("blockcrack")
 		BLOCK_CRACK("blockcrack", 37, DataType.Block),
+		@SerializedName("blockdust")
 		BLOCK_DUST("blockdust", 38, DataType.Block),
+		@SerializedName("droplet")
 		WATER_DROP("droplet", 39),
+		@SerializedName("take")
 		ITEM_TAKE("take", 40),
+		@SerializedName("mobappearance")
 		MOB_APPEARANCE("mobappearance",41),
+		@SerializedName("dragonbreath")
 		DRAGON_BREATH("dragonbreath", 42),
+		@SerializedName("endRod")
 		END_ROD("endRod", 43),
+		@SerializedName("damageIndicator")
 		DAMAGE_INDICATOR("damageIndicator", 44),
+		@SerializedName("sweepAttack")
 		SWEEP_ATTACK("sweepAttack", 45),
+		@SerializedName("fallingdust")
 		FALLING_DUST("fallingdust", 46, DataType.Block),
 		;
 
@@ -267,6 +316,13 @@ public class ParticleAPI extends NMSBase {
 			switch (this.type) {
 			case ItemStack:
 			case Block: return true;
+			default: return false;
+			}
+		}
+		
+		public boolean hasColorParticle() {
+			switch(this.type) {
+			case Color: return true;
 			default: return false;
 			}
 		}

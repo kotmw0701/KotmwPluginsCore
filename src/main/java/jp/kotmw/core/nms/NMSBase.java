@@ -2,7 +2,7 @@
  * @author kotmw0701
  *
  */
-package jp.motlof.core.api;
+package jp.kotmw.core.nms;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

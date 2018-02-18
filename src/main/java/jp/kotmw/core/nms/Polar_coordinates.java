@@ -1,22 +1,22 @@
-package jp.motlof.core.api;
+package jp.kotmw.core.nms;
 
 import org.bukkit.Location;
 import org.bukkit.World;
 
-public class Polar_coodinates implements Cloneable{
+public class Polar_coordinates implements Cloneable{
 	private World world;
 	private double radius; //r
 	private double theta; //θ ※ラジアン
 	private double phi; //φ ※ラジアン
 	
-	public Polar_coodinates(World world, double radius, double theta, double phi) {
+	public Polar_coordinates(World world, double radius, double theta, double phi) {
 		this.world = world;
 		this.radius = radius;
 		this.theta = theta;
 		this.phi = phi;
 	}
 	
-	public Polar_coodinates(Location bukkitlocation) {
+	public Polar_coordinates(Location bukkitlocation) {
 		this.world = bukkitlocation.getWorld();
 		this.radius = bukkitlocation.distance(new Location(bukkitlocation.getWorld(), 0, 0, 0));
 		double x = bukkitlocation.getX(), y = bukkitlocation.getY(), z = bukkitlocation.getZ();
@@ -55,14 +55,14 @@ public class Polar_coodinates implements Cloneable{
 		return new Location(world, x*Math.cos(newtheta)-y*Math.sin(newtheta), x*Math.sin(newtheta)+y*Math.cos(newtheta), z);
 	}
 	
-	public Polar_coodinates add(Polar_coodinates pc) {
+	public Polar_coordinates add(Polar_coordinates pc) {
 		this.radius += pc.radius;
 		this.theta += pc.theta;
 		this.phi += pc.phi;
 		return this;
 	}
 	
-	public Polar_coodinates add(double radius, double theta, double phi) {
+	public Polar_coordinates add(double radius, double theta, double phi) {
 		this.radius += radius;
 		this.theta += theta;
 		this.phi += phi;
@@ -86,9 +86,9 @@ public class Polar_coodinates implements Cloneable{
 	public void setPhi(double phi) {this.phi = phi;}
 	
 	@Override
-	public Polar_coodinates clone() {
+	public Polar_coordinates clone() {
 		try {
-			return (Polar_coodinates) super.clone();
+			return (Polar_coordinates) super.clone();
 		} catch (CloneNotSupportedException e) {
 			throw new Error(e);
 		}

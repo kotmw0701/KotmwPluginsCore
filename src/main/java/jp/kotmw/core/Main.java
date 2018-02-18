@@ -1,4 +1,4 @@
-package jp.motlof.core;
+package jp.kotmw.core;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
