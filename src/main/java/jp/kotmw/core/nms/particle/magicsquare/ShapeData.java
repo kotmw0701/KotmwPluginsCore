@@ -7,7 +7,7 @@ import jp.kotmw.core.nms.particle.ParticleAPI.EnumParticle;
 public class ShapeData extends Magic_square {
 	
 	//全図形共通変数
-	private SquareType type; //図形のパターン
+	private SquareType type = SquareType.STAR; //図形のパターン
 	private double radius; //はんけー
 	private Position position; //始点をどこにするか
 	

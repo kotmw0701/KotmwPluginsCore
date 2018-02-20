@@ -13,7 +13,6 @@ import jp.kotmw.core.nms.DetailsColor;
 import jp.kotmw.core.nms.Polar_coordinates;
 import jp.kotmw.core.nms.particle.ParticleAPI;
 import jp.kotmw.core.nms.particle.ParticleAPI.EnumParticle;
-import jp.kotmw.core.nms.particle.magicsquare.Position.PositionType;
 
 public class Magic_square {
 	
@@ -28,10 +27,11 @@ public class Magic_square {
 	
 	private Location location;
 	private DetailsColor detailsColor;
+	//private long ave;
 	
 	protected EnumParticle particle;
 	protected String color;
-	protected List<Double> params = new ArrayList<>();
+	protected List<Double> params = new ArrayList<Double>(Arrays.asList(0.0, 0.0, 0.0));
 	protected List<ShapeData> shapes = new ArrayList<>();
 	
 	protected Magic_square() {}
@@ -43,30 +43,42 @@ public class Magic_square {
 		color = square.color;
 		shapes = square.shapes;
 		params = square.params;
+		if(params.size() < 4) params.addAll(Arrays.asList((particle.hasColorParticle() ? 1.0 : 0.0), 0.0, 0.0, 0.0, 0.0));//もしサイズが0だったときのためのエラー回避で5つ入るようにする・・・そんなこと無いと思うがな
 	}
 
 	public void show() {
-		for(ShapeData data : shapes)
+		for(ShapeData data : shapes) {
+			//long start = System.nanoTime();
 			Branch(data);
+			//long end = System.nanoTime();
+			//System.out.println(data.getType().toString()+"を描画するのに掛かる時間: "+((end-start) / 1000000f)+"ms");
+			//ave += (end-start);
+		}
 	}
 	
+	/*public void average() {
+		System.out.println("平均描画時間: "+((ave/100) / 1000000f)+"ms");
+		System.out.println("-----------------------------------------");
+	}*/
+	
 	private void Branch(ShapeData data) {
-		Location location = data.getPosition() == null 
-				? this.location.clone() : this.location.clone().add(data.getPosition().getType() == PositionType.POLAR_COORDINATE 
-						? data.getPosition().getPolar_Coordinates(this.location.getWorld()).convertLocation() : data.getPosition().getLocation(this.location.getWorld()));
-		EnumParticle particle = (data.getParticle() == null ? this.particle : data.getParticle());
-		String colorcode = (data.color == null ? color : data.color);
-		if(params.size() < 4) params.addAll(Arrays.asList((double)(particle.hasColorParticle() ? 1 : 0), (double)0));
-		detailsColor = colorcode != null ? new DetailsColor(colorcode) : new DetailsColor(params.get(0).intValue(), params.get(1).intValue(), params.get(2).intValue());
-		switch (data.getType()) {
-		case CIRCLE: circle(data, location, particle);
-			break;
-		case POLYGON: polygon(data, location, particle);
-			break;
-		case STAR: star(data, location, particle);
-			break;
-		case LINE: line(data, location, particle);
-			break;
+		EnumParticle particle = data.getParticle() != null ? data.getParticle() : this.particle;
+		detailsColor = new DetailsColor(data.color != null ? data.color : color);
+		double paramrepeat = data.getPosition() != null ? data.getPosition().getRepeat() != null ? data.getPosition().getRepeat().getAngle() : 2*Math.PI : 2*Math.PI;
+		int limitcount = data.getPosition() != null ? data.getPosition().getRepeat() != null ? data.getPosition().getRepeat().getLimit()-1 : 0 : 0;
+		double max = limitcount > 0 ? paramrepeat*limitcount < 2*Math.PI ? paramrepeat*limitcount : 2*Math.PI : 2*Math.PI;
+		for(double theta = 0.0; theta <= max ; theta += paramrepeat) {
+			Location center = data.getPosition() != null ? location.clone().add(data.getPosition().getPolar_Coordinates(location.getWorld()).add(0, theta, 0).convertLocation()) : this.location.clone();
+			switch (data.getType()) {
+			case CIRCLE: circle(data, center, particle);
+				break;
+			case POLYGON: polygon(data, center, particle);
+				break;
+			case STAR: star(data, center, particle);
+				break;
+			case LINE: line(data, center, particle);
+				break;
+			}
 		}
 	}
 	
@@ -74,7 +86,7 @@ public class Magic_square {
 	private void star(ShapeData data, Location location, EnumParticle particle) {
 		for(double theta = 0.0; theta <= 2*Math.PI; theta += Math.PI/(data.getQuantity()/2)) {
 			Polar_coordinates pc = new Polar_coordinates(location.getWorld(), data.getRadius(), theta, 0);
-			double max = pc.convertLocation().distance(pc.clone().add(0, 2*Math.PI/(data.getQuantity()/2), 0).convertLocation());
+			double max = pc.convertLocation().distance(pc.clone().add(0, Math.PI/(data.getQuantity()/2)*2, 0).convertLocation());
 			for(double line = 0.0; line <= max; line += 0.2)
 				sendParticle(particle, location.clone().add(pc.convertLocation()).add(pc.clone().add(line-data.getRadius(), ((2+(data.getQuantity()/2))*Math.PI/((data.getQuantity()/2)*2)), 0).convertLocation()));
 		}
@@ -92,20 +104,21 @@ public class Magic_square {
 	
 	//丸
 	private void circle(ShapeData data, Location location, EnumParticle particle) {
-		for(double theta = 0.0; theta <= Math.PI*2; theta += Math.PI/60) {
+		for(double theta = 0.0; theta <= 2*Math.PI; theta += Math.PI/60) {
 			sendParticle(particle, location.clone().add(new Polar_coordinates(location.getWorld(), data.getRadius(), theta, 0).convertLocation()));
 		}
 	}
 	
 	//線
 	private void line(ShapeData data, Location location, EnumParticle particle) {
+		double angle = data.getPosition() == null ? 0 : data.getPosition().getAngle();
 		for(double radius = 0; radius <= data.getRadius(); radius += 0.1) {
-			sendParticle((data.getParticle() == null ? particle : data.getParticle()), location.clone().add(new Polar_coordinates(location.getWorld(), radius, Math.toRadians(data.getPosition().getAngle()), 0).convertLocation()));
+			sendParticle((data.getParticle() == null ? particle : data.getParticle()), location.clone().add(new Polar_coordinates(location.getWorld(), radius, angle, 0).convertLocation()));
 		}
 	}
 	
 	private void sendParticle(EnumParticle particle, Location center) {
-		if(particle.hasColorParticle()) {
+		if(particle.hasColorParticle() && detailsColor != null) {
 			sendParticle(particle, center, detailsColor.getRed(), detailsColor.getGreen(), detailsColor.getBlue(), 1, 0);
 			return;
 		}

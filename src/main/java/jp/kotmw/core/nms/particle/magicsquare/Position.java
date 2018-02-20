@@ -11,11 +11,10 @@ import jp.kotmw.core.nms.Polar_coordinates;
 
 public class Position {
 	
-	private PositionType type; //指定するタイプ
+	private PositionType type = PositionType.POLAR_COORDINATE; //指定するタイプ
 	private List<Double> pos; //始点
-	
-	//line限定
 	private double angle;
+	private Repetation repeat; //繰り返し
 	
 	public PositionType getType() {
 		return type;
@@ -25,8 +24,12 @@ public class Position {
 		return pos;
 	}
 	
+	public Repetation getRepeat() {
+		return repeat;
+	}
+	
 	public double getAngle() {
-		return angle;
+		return Math.toRadians(angle);
 	}
 
 	public void setType(PositionType type) {
@@ -38,10 +41,22 @@ public class Position {
 	}
 	
 	public Polar_coordinates getPolar_Coordinates(World world) {
+		if(type != null) switch (type) {
+			case COORDINATE:
+				return new Polar_coordinates(new Location(world, pos.get(0), pos.get(1), pos.get(2)));
+			case POLAR_COORDINATE:
+				break;
+			}
 		return new Polar_coordinates(world, pos.get(0), Math.toRadians(pos.get(1)), Math.toRadians(pos.get(2)));
 	}
 	
 	public Location getLocation(World world) {
+		if(type != null) switch (type) {
+		case COORDINATE:
+			break;
+		case POLAR_COORDINATE:
+			return new Polar_coordinates(world, pos.get(0), Math.toRadians(pos.get(1)), Math.toRadians(pos.get(2))).convertLocation();
+		}
 		return new Location(world, pos.get(0), pos.get(1), pos.get(2));
 	}
 
