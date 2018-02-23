@@ -19,6 +19,7 @@ public class DetailsColor {
 	}
 	
 	private void setColor(String code) {
+		if(code == null) throw new NullPointerException("色コードがnullです");
 		int colorvalue = Integer.decode(code).intValue();
 		this.red = Adjustmentparam(((colorvalue >> 16) & 0xFF));
 		this.green = Adjustmentparam(((colorvalue >> 8) & 0xFF));

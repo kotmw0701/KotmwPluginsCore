@@ -2,7 +2,7 @@ package jp.kotmw.core.nms.particle.magicsquare;
 
 import com.google.gson.annotations.SerializedName;
 
-import jp.kotmw.core.nms.particle.ParticleAPI.EnumParticle;
+import jp.kotmw.core.api.particle.EnumParticle;
 
 public class ShapeData extends Magic_square {
 	
@@ -21,6 +21,8 @@ public class ShapeData extends Magic_square {
 	public double getRadius() {return radius;}
 
 	public EnumParticle getParticle() {return particle;}
+	
+	public String getColor() {return color;}
 
 	public Position getPosition() {return position;}
 
@@ -34,7 +36,7 @@ public class ShapeData extends Magic_square {
 
 	public void setPosition(Position position) {this.position = position;}
 
-	enum SquareType {
+	public enum SquareType {
 		@SerializedName("star")
 		STAR, 
 		@SerializedName("polygon")
