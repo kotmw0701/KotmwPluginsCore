@@ -12,22 +12,18 @@ import javax.imageio.ImageIO;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 import jp.kotmw.core.Polar_coordinate;
 import jp.kotmw.core.api.particle.EnumParticle;
-import jp.kotmw.core.api.particle.Particle;
 import jp.kotmw.core.api.particle.ParticleRunnable;
-import jp.kotmw.core.nms.DetailsColor;
+import jp.kotmw.core.nms.DetailsColor.DetailsColorType;
 
-public class PixelArtParticle extends ParticleRunnable{
+public class PixelArtParticle extends ParticleRunnable {
 
-	private Location location;
 	private BufferedImage image;
 	private int w, h;
 	private double separate = 0.2;
 	private boolean applyColor = true;
-	private static EnumParticle enumParticle = EnumParticle.REDSTONE;
 	
 	private Font font = new Font(Font.SERIF, Font.PLAIN, 12);
 	
@@ -64,7 +60,19 @@ public class PixelArtParticle extends ParticleRunnable{
 	 * @throws IOException ファイルのエラー
 	 */
 	public PixelArtParticle(File file, Location location, double separate, boolean applyColor) throws IOException {
-		super(enumParticle, location, 0, 0, 0, 0, 0);
+		super(EnumParticle.REDSTONE, null, location, 0, 0, 0, 0, 0);
+		changePixelArt_Image(file, location, separate, applyColor);
+	}
+	
+	public void changePixelArt_Image(File file, Location location) throws IOException {
+		changePixelArt_Image(file, location, 0.2, true);
+	}
+	
+	public void changePixelArt_Image(File file, Location location, double separate) throws IOException {
+		changePixelArt_Image(file, location, separate, true);
+	}
+	
+	public void changePixelArt_Image(File file, Location location, double separate, boolean applyColor) throws IOException {
 		this.location = location.clone();
 		this.separate = (separate <= 0) ? 0.2 : separate;//0以下だったら強制的に0.2にする
 		this.applyColor = applyColor;
@@ -80,8 +88,8 @@ public class PixelArtParticle extends ParticleRunnable{
 	 * @param string 出力したい文字列
 	 * @param location 開始点座標
 	 */
-	public PixelArtParticle(String string, Location location) {
-		this(string, location, 0.2, enumParticle, null);
+	public PixelArtParticle(String string, Location location) throws IllegalArgumentException {
+		this(string, location, 0.2, null);
 	}
 	
 	/**
@@ -92,8 +100,8 @@ public class PixelArtParticle extends ParticleRunnable{
 	 * @param location 開始点座標
 	 * @param separate パーティクル同士の間隔(推奨: 0.10～0.20)
 	 */
-	public PixelArtParticle(String string, Location location, double separate) {
-		this(string, location, separate, enumParticle, null);
+	public PixelArtParticle(String string, Location location, double separate) throws IllegalArgumentException {
+		this(string, location, separate, null);
 	}
 	
 	/**
@@ -103,27 +111,23 @@ public class PixelArtParticle extends ParticleRunnable{
 	 * @param string 出力したい文字列
 	 * @param location 開始点座標
 	 * @param separate パーティクル同士の間隔(推奨: 0.10～0.20)
-	 * @param enumParticle Particleの種類
-	 */
-	public PixelArtParticle(String string, Location location, double separate, EnumParticle enumParticle) {
-		this(string, location, separate, enumParticle, null);
-	}
-	
-	/**
-	 * 文字列からパーティクルを生成するコンストラクタ<br>
-	 * "_"が空白、"%n"が改行(デフォルト)
-	 * 
-	 * @param string 出力したい文字列
-	 * @param location 開始点座標
-	 * @param separate パーティクル同士の間隔(推奨: 0.10～0.20)
-	 * @param enumParticle Particleの種類
 	 * @param font 出力したいフォント、デフォルトは(SERIF, PLAIN, 12)
 	 * @throws Exception 使用することが出来ないフォントが設定されている
 	 */
-	public PixelArtParticle(String string, Location location, double separate, EnumParticle enumParticle, Font font) throws IllegalArgumentException {
-		super(enumParticle, location, 0, 0, 0, 0, 0);
-		this.location = location.clone();
-		PixelArtParticle.enumParticle = enumParticle;
+	public PixelArtParticle(String string, Location location, double separate, Font font) throws IllegalArgumentException {
+		super(EnumParticle.REDSTONE, location, 0, 0, 0, 1, 0);
+		changePixelArt_String(string, separate, font);
+	}
+	
+	public void changePixelArt_String(String string) {
+		changePixelArt_String(string, 0.2, null);
+	}
+	
+	public void changePixelArt_String(String string, double separate) {
+		changePixelArt_String(string, separate, null);
+	}
+	
+	public void changePixelArt_String(String string, double separate, Font font) {
 		this.separate = (separate <= 0) ? 0.2 : separate;//0以下だったら強制的に0.2にする
 		FontMetrics fontMetrics = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).createGraphics().getFontMetrics(font == null ? this.font : font);//文字列の縦横比を取るため、Fontのメトリクスを取得
 		int count = count(string, "%n");//改行回数
@@ -140,22 +144,21 @@ public class PixelArtParticle extends ParticleRunnable{
 		for(String string2 : string.split("%n"))
 			graphics2d.drawString(string2.replaceAll("_", " "), 0, fontMetrics.getAscent()+fontMetrics.getLeading()+(fontMetrics.getHeight()*++i));
 	}
-
+	
 	@Override
 	public void show() {
-		show(0, 0, 0);
-	}
-	
-	public void show(double x_rotation, double y_rotation, double z_rotation) {
-		DetailsColor color = new DetailsColor(0, 0, 0);
 		for(int x = 0; x < w; x++) {
 			for(int y = 0; y < h; y++) {
 				int pixel = image.getRGB(x, y);
 				if(new Color(pixel, true).getAlpha() == 0)//Alpha値が0(=透明)だった場合は出力しない
 					continue;
-				if(applyColor) color = new DetailsColor((pixel >> 16) & 0xFF, (pixel >> 8) & 0xFF, pixel & 0xFF);
+				if(applyColor) {
+					//particle.setColor(new DetailsColor((pixel >> 16) & 0xFF, (pixel >> 8) & 0xFF, pixel & 0xFF));
+					particle.setColor(DetailsColorType.WoolColor_BLACK.getColor());
+					setParams(0, 0, 0, 1, 0);
+				}
 				Polar_coordinate pCoodinates = new Polar_coordinate(new Location(location.getWorld(), x*separate, y*separate, 0)).add(0, 0, Math.toRadians(180));
-				sendParticle(location.clone().add(pCoodinates.convertLocation()), color);
+				sendParticle(Bukkit.getOnlinePlayers(), location.clone().add(pCoodinates.convertLocation()));
 			}
 		}
 	}
@@ -188,11 +191,5 @@ public class PixelArtParticle extends ParticleRunnable{
 				maxString = str;
 			}
 		return maxString;
-	}
-	
-	private void sendParticle(Location location, DetailsColor color) {
-		for(Player player : Bukkit.getOnlinePlayers())
-			if(player.getWorld().getName().equalsIgnoreCase(location.getWorld().getName()))
-				new Particle(enumParticle, location, color.getRed(), color.getGreen(), color.getBlue(), 1, 0).sendParticle(player);
 	}
 }

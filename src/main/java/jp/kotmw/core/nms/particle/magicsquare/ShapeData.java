@@ -25,17 +25,7 @@ public class ShapeData extends Magic_square {
 	public String getColor() {return color;}
 
 	public Position getPosition() {return position;}
-
-	public void setType(SquareType type) {this.type = type;}
-
-	public void setQuantity(double quantity) {this.quantity = quantity;}
-
-	public void setRadius(double radius) {this.radius = radius;}
-
-	public void setParticle(EnumParticle particle) {this.particle = particle;}
-
-	public void setPosition(Position position) {this.position = position;}
-
+	
 	public enum SquareType {
 		@SerializedName("star")
 		STAR, 

@@ -332,9 +332,7 @@ public enum EnumParticle {
 		switch (this.type) {
 		case Color:
 			if(color == null) return null;
-			float[] colorData = new float[]{color.getRed(), color.getGreen(), color.getBlue()};
-			if(this == EnumParticle.REDSTONE) colorData[0] -= 1f;
-			return colorData;
+			return new float[]{color.getRed(), color.getGreen(), color.getBlue()};
 		case Note:
 			if(pitch < 0) return null;
 			return new float[]{pitch/24f, 0f, 0f};

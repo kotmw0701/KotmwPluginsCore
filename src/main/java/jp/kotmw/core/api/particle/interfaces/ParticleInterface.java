@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import jp.kotmw.core.Polar_coordinate;
-import jp.kotmw.core.api.particle.EnumParticle;
 
 public interface ParticleInterface {
 	
@@ -19,6 +18,8 @@ public interface ParticleInterface {
 	 */
 	boolean sendParticle(Player player);
 	
+	boolean sendParticle(Player player, Location location);
+	
 	/**
 	 * 集団のプレイヤーに送信します<br>
 	 * Bukkit.getOnlinePlayers()そのままぶち込む前提の引数にしてあるけど普通のListでも入れられるはず
@@ -27,19 +28,7 @@ public interface ParticleInterface {
 	 */
 	void sendParticle(Collection<? extends Player> players);
 	
-	/**
-	 * パーティクルを設定します
-	 * 
-	 * @param particle パーティクル
-	 */
-	void setParticle(EnumParticle particle);
-	
-	/**
-	 * 表示する座標を設定します
-	 * 
-	 * @param location 座標
-	 */
-	void setLocation(Location location);
+	void sendParticle(Collection<? extends Player> players, Location location);
 	
 	/**
 	 * 既存の座標データに新しいデータを足します
@@ -48,14 +37,6 @@ public interface ParticleInterface {
 	 * @return 移動後の座標
 	 */
 	Location addLocation(Location location);
-	
-	/**
-	 * 表示する座標を設定します
-	 * 
-	 * @param polar_coordinate 極座標
-	 */
-	void setPolar_Coordinates(Polar_coordinate polar_coordinate);
-	
 	
 	/**
 	 * 既存の座標データに新しいデータを足します

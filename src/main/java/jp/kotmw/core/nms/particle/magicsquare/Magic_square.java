@@ -14,7 +14,7 @@ import jp.kotmw.core.api.particle.EnumParticle;
 import jp.kotmw.core.api.particle.ParticleRunnable;
 import jp.kotmw.core.nms.DetailsColor;
 
-public class Magic_square extends ParticleRunnable{
+public class Magic_square extends ParticleRunnable {
 	
 	/*
 	 * メモ
@@ -24,10 +24,8 @@ public class Magic_square extends ParticleRunnable{
 	 * ちょっと面倒になる
 	 * 
 	 */
-	private Location location;
 	private long ave;
 	
-	protected EnumParticle particle;
 	protected String color;
 	protected List<Double> params = new ArrayList<Double>(Arrays.asList(0.0, 0.0, 0.0));
 	protected List<ShapeData> shapes = new ArrayList<>();
@@ -37,7 +35,7 @@ public class Magic_square extends ParticleRunnable{
 	}
 	
 	public Magic_square(Location location, String json) {
-		super(null, location, 0, 0, 0, 0, 0);
+		super(EnumParticle.REDSTONE, location, 0, 0, 0, 0, 0);
 		if(location == null) return;
 		Magic_square square = new Gson().fromJson(json, Magic_square.class);
 		particle = square.particle;
@@ -55,12 +53,11 @@ public class Magic_square extends ParticleRunnable{
 	
 	public void show() {
 		for(ShapeData data : shapes) {
-			long start = System.nanoTime();
-			EnumParticle particle = data.getParticle() != null ? data.getParticle() : this.particle;
+			boolean isposition = data.getPosition() != null, isrepeat = isposition ? data.getPosition().getRepeat() != null : false;
+			particle = data.getParticle() != null ? data.getParticle() : this.particle;
 			if(particle.hasColorParticle()) particle.setColor(new DetailsColor(data.getColor() != null ? data.getColor() : color));
-			setParticle(particle);
-			double paramrepeat = data.getPosition() != null ? data.getPosition().getRepeat() != null ? data.getPosition().getRepeat().getAngle() : 2*Math.PI : 2*Math.PI;
-			int limitcount = data.getPosition() != null ? data.getPosition().getRepeat() != null ? data.getPosition().getRepeat().getLimit()-1 : 0 : 0;
+			double paramrepeat = isposition ? isrepeat ? data.getPosition().getRepeat().getAngle() : 2*Math.PI : 2*Math.PI;
+			int limitcount = isposition ? isrepeat ? data.getPosition().getRepeat().getLimit()-1 : 0 : 0;
 			double max = limitcount > 0 ? paramrepeat*limitcount < 2*Math.PI ? paramrepeat*limitcount : 2*Math.PI : 2*Math.PI;
 			for(double theta = 0.0; theta <= max ; theta += paramrepeat) {
 				Location center = data.getPosition() != null ? location.clone().add(data.getPosition().getPolar_Coordinates(location.getWorld()).add(0, theta, 0).convertLocation()) : this.location.clone();
@@ -75,9 +72,6 @@ public class Magic_square extends ParticleRunnable{
 					break;
 				}
 			}
-			long end = System.nanoTime();
-			System.out.println(data.getType()+"の処理時間: "+(end-start)/1000000f+"ms");
-			ave += (end-start);
 		}
 	}
 	
@@ -103,7 +97,7 @@ public class Magic_square extends ParticleRunnable{
 	
 	//丸
 	private void circle(ShapeData data, Location location) {
-		for(double theta = 0.0; theta <= 2*Math.PI; theta += Math.PI/60)
+		for(double theta = 0.0; theta <= 2*Math.PI; theta += Math.PI/50)
 			sendParticle(location.clone().add(new Polar_coordinate(location.getWorld(), data.getRadius(), theta, 0).convertLocation()));
 	}
 	
@@ -115,8 +109,7 @@ public class Magic_square extends ParticleRunnable{
 	}
 	
 	private void sendParticle(Location center) {
-		setLocation(center);
 		setParams(params.get(0).floatValue(), params.get(1).floatValue(), params.get(2).floatValue(), params.get(3).floatValue(), (params.size() < 5 ? 0 : params.get(4).intValue()));
-		sendParticle(Bukkit.getOnlinePlayers());
+		sendParticle(Bukkit.getOnlinePlayers(), center);
 	}
 }
