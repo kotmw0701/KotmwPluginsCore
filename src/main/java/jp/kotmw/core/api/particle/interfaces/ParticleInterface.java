@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import jp.kotmw.core.Polar_coordinate;
+import jp.kotmw.core.Polar_Coordinate3D;
 
 public interface ParticleInterface {
 	
@@ -41,10 +41,10 @@ public interface ParticleInterface {
 	/**
 	 * 既存の座標データに新しいデータを足します
 	 * 
-	 * @param polar_coordinate 移動量
+	 * @param polar_Coordinate3D 移動量
 	 * @return 移動後の極座標
 	 */
-	Polar_coordinate addPolar_Coordinate(Polar_coordinate polar_coordinate);
+	Polar_Coordinate3D addPolar_Coordinate(Polar_Coordinate3D polar_Coordinate3D);
 	
 	/**
 	 * パーティクルに関するパラメータを設定します

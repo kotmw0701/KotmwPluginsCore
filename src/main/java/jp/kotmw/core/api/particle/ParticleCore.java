@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import jp.kotmw.core.Polar_coordinate;
+import jp.kotmw.core.Polar_Coordinate3D;
 import jp.kotmw.core.api.particle.interfaces.ParticleInterface;
 import jp.kotmw.core.nms.DetailsColor;
 import jp.kotmw.core.nms.NMSBase;
@@ -60,8 +60,8 @@ public class ParticleCore extends NMSBase implements ParticleInterface{
 	}
 	
 	@Override
-	public Polar_coordinate addPolar_Coordinate(Polar_coordinate polar_coordinate) {
-		return new Polar_coordinate(location).add(polar_coordinate);
+	public Polar_Coordinate3D addPolar_Coordinate(Polar_Coordinate3D polar_Coordinate3D) {
+		return new Polar_Coordinate3D(location).add(polar_Coordinate3D);
 	}
 	
 	@Override

@@ -4,7 +4,6 @@
  */
 package jp.kotmw.core.nms;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class NMSBase {
@@ -12,7 +11,7 @@ public class NMSBase {
 	private static String ver;
 	
 	static {
-		ver = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+		//ver = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 	}
 	
 	protected static void sendPacket(Player player, Object packet) {

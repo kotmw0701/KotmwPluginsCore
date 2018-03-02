@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-import jp.kotmw.core.Polar_coordinate;
+import jp.kotmw.core.Polar_Coordinate3D;
 import jp.kotmw.core.api.particle.EnumParticle;
 import jp.kotmw.core.api.particle.ParticleRunnable;
 import jp.kotmw.core.nms.DetailsColor.DetailsColorType;
@@ -157,7 +157,7 @@ public class PixelArtParticle extends ParticleRunnable {
 					particle.setColor(DetailsColorType.WoolColor_BLACK.getColor());
 					setParams(0, 0, 0, 1, 0);
 				}
-				Polar_coordinate pCoodinates = new Polar_coordinate(new Location(location.getWorld(), x*separate, y*separate, 0)).add(0, 0, Math.toRadians(180));
+				Polar_Coordinate3D pCoodinates = new Polar_Coordinate3D(new Location(location.getWorld(), x*separate, y*separate, 0)).add(0, 0, Math.toRadians(180));
 				sendParticle(Bukkit.getOnlinePlayers(), location.clone().add(pCoodinates.convertLocation()));
 			}
 		}
