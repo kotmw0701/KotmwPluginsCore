@@ -142,7 +142,7 @@ public class PixelArtParticle extends ParticleRunnable {
 		graphics2d.setColor(Color.black);//文字色を黒色に
 		int i = 0;
 		for(String string2 : string.split("%n"))
-			graphics2d.drawString(string2.replaceAll("_", " "), 0, fontMetrics.getAscent()+fontMetrics.getLeading()+(fontMetrics.getHeight()*++i));
+			graphics2d.drawString(string2.replaceAll("<a>", " "), 0, fontMetrics.getAscent()+fontMetrics.getLeading()+(fontMetrics.getHeight()*++i));
 	}
 	
 	@Override

@@ -32,6 +32,12 @@ public class Polar_Coordinate2D implements Cloneable{
 		return new Point2D.Double(x, z);
 	}
 	
+	public Point2D.Double convertLocation(double ancorx, double ancorz) {
+		double x = radius*Math.cos(theta);
+		double z = radius*Math.sin(theta);
+		return new Point2D.Double(x+ancorx, z+ancorz);
+	}
+	
 	public Point2D.Double rotation(double newtheta) {
 		Double pos = convertLocation();
 		return new Point2D.Double(pos.getX()*Math.cos(newtheta)-pos.getY()*Math.sin(newtheta), pos.getX()*Math.sin(newtheta)+pos.getY()*Math.cos(newtheta));

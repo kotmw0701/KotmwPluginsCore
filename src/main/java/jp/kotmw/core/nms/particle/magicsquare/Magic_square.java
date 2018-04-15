@@ -2,6 +2,7 @@ package jp.kotmw.core.nms.particle.magicsquare;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -94,6 +95,7 @@ public class Magic_square extends ParticleRunnable {
 			double max = pc.convertLocation().distance(pc.clone().add(0, Math.PI/(data.getQuantity()/2)*2, 0).convertLocation());
 			for(double line = 0.0; line <= max; line += 0.2)
 				sendParticle(location.clone().add(pc.convertLocation().add(pc.clone().add(line-data.getRadius(), ((2+(data.getQuantity()/2))*Math.PI/((data.getQuantity()/2)*2)), 0).convertLocation())));
+			//中心座標 + パーティクル開始座標 + 移動後の表示する1点の座標
 		}
 	}
 	
@@ -178,35 +180,23 @@ public class Magic_square extends ParticleRunnable {
 	 * 普通に代入
 	 */
 	private void star(ShapeData data, Point2D center) {
-		int i = 0, a = 0, b = 0;
+		graphics2d.setColor(Color.BLUE);
 		double quantity = data.getQuantity(), add = Math.PI/(quantity/2);
-		boolean iseven = quantity%2 == 0;
-		int[] x = new int[(int) (iseven ? Math.round(quantity/2) : quantity*2)], y = new int[x.length], x2 = new int[x.length], y2 = new int[x2.length];
-		for(double theta = 0.0; (iseven ? theta < 2*Math.PI-add : theta <= 2*Math.PI-add); theta += add) {
-			Point2D point = new Polar_Coordinate2D(data.getRadius()*10, theta*2+(iseven && i%2 != 1 ? 0 : add)+(data.getPosition() != null ? data.getPosition().getAngle() : 0)).convertLocation();
-			if(iseven && i%2 != 0) {
-				x2[a] = (int) Math.round(center.getX()+point.getX());
-				y2[a] = (int) Math.round(center.getY()+point.getY());
-				a++;
-			} else {
-				x[b] = (int) Math.round(center.getX()+point.getX());
-				y[b] = (int) Math.round(center.getY()+point.getY());
-				b++;
-			}
-			i++;
+		for(double theta = 0.0; theta <= 2*Math.PI-add; theta += add) {
+			System.out.println("draw");
+			Polar_Coordinate2D pc2d = new Polar_Coordinate2D(data.getRadius()*10, theta+(data.getPosition() != null ? data.getPosition().getAngle() : 0));
+			double max = pc2d.convertLocation().distance(pc2d.clone().add(0, Math.PI/(data.getQuantity()/2)*2).convertLocation());
+			Point2D pos1 = pc2d.convertLocation(500, 500), pos2 = pc2d.add(max, ((2+(data.getQuantity()/2))*Math.PI/((data.getQuantity()/2)*2))).convertLocation(500, 500);
+			graphics2d.draw(new Line2D.Double(pos1, pos2));
 		}
-		graphics2d.drawPolygon(x, y, (iseven ? b : i));
-		if(iseven)
-			graphics2d.drawPolygon(x2, y2, a);
 	}
 	
 	private void polygon(ShapeData data, Point2D center) {
 		int i = 0;
 		double quantity = data.getQuantity(), add = Math.PI/(quantity/2);
-		boolean iseven = quantity%2 == 0;
-		int[] x = new int[(int) (iseven ? quantity : quantity*2)], y = new int[x.length];
+		int[] x = new int[(int) quantity], y = new int[x.length];
 		graphics2d.setColor(Color.GREEN);
-		for(double theta = 0.0; (iseven ? theta < 2*Math.PI-add : theta <= 2*Math.PI-add); theta += add) {
+		for(double theta = 0.0; theta <= 2*Math.PI-add; theta += add) {
 			Point2D point = new Polar_Coordinate2D(data.getRadius()*10, theta+(data.getPosition() != null ? data.getPosition().getAngle() : 0)).convertLocation();
 			x[i] = (int) Math.round(center.getX()+point.getX());
 			y[i] = (int) Math.round(center.getY()+point.getY());
